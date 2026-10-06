@@ -1,0 +1,66 @@
+﻿Bambu3MF 一键转彩色 —— 使用说明
+================================================================
+
+【它能做什么】
+  从 MakerWorld / Bambu Studio 下载的多色工程 3mf，直接上传给嘉立创做全彩
+  树脂打印时，对方会说「模型没有颜色」。这个小工具就是给这种 3mf 补上
+  逐三角面的完整 RGB 颜色，输出成嘉立创认识的彩色 3mf 和 OBJ+MTL。
+
+【三步搞定】
+
+  第 1 步：拖
+     把要转换的 .3mf 文件（可以一次多选好几个）用鼠标拖到
+     「拖拽转换.bat」这个文件上，松手。
+
+  第 2 步：等
+     会弹出一个黑色窗口，自动开始转换，一般几秒钟。
+     窗口里会显示：识别到的颜色（十六进制）、每种颜色有多少个三角面、
+     以及生成的文件路径。看到「全部完成：成功 1 个，失败 0 个」就好了，
+     按任意键关掉窗口。
+
+  第 3 步：拿
+     在每个 3mf 文件旁边，会出现一个以它命名的文件夹，例如：
+         TNT+AMS+Detailed.3mf
+         TNT+AMS+Detailed_color\        ← 新出现的文件夹
+             TNT+AMS+Detailed_color.3mf     ← 带颜色的模型（推荐上传这个）
+             TNT+AMS+Detailed_color.zip     ← 压缩包，内含 3mf 和 obj+mtl
+             TNT+AMS+Detailed_color.obj
+             TNT+AMS+Detailed_color.mtl
+
+【上传给嘉立创】
+  * 传 3MF 或者 zip（内含 OBJ+MTL）都可以，两种对方都收。
+    注意：如果传 OBJ+MTL，两个文件必须一起打包成 zip 上传，
+    .obj 和 .mtl 不能分开传。
+  * 上传后看订单缩略图是不是彩色的，就能自检：
+      彩色 → 成功；
+      还是灰白 → 说明传错文件了，请改传 _color.3mf。
+  * 原来的 3mf 文件不会被改动，也不会被删除，可以放心保留。
+
+【常见问题】
+  Q：双击 bat 弹窗一闪就没 / 提示请先安装 Python 3？
+  A：说明电脑上没有装 Python。到 https://www.python.org/downloads/windows/
+     下载安装，安装时务必勾选「Add python.exe to PATH」，装完再拖一次。
+
+  Q：窗口提示「这个 3mf 里没有 Metadata/project_settings.config」？
+  A：这个 3mf 不是 Bambu Studio / OrcaSlicer 保存的工程文件，
+     里面本来就没有 AMS 颜色信息，工具只能输出单色。
+
+  Q：我想要的颜色和实际打印出来不一样？
+  A：工具取的是原工程 AMS 槽位里的颜色（例如 Bambu 的红 #FF0000、
+     黑 #000000、白 #FFFFFF、银 #C0C0C0）。这是模型作者设定的颜色，
+     和实际耗材颜色无关；树脂打印时以嘉立创的材料色卡为准，
+     可以在订单备注里写清楚「按文件中的 RGB 颜色对应选材」。
+
+  Q：可以批量吗？
+  A：可以。一次多选几个 3mf 一起拖上去，就会一个个依次转换。
+
+【技术细节（想了解再看）】
+  * 颜色表：Metadata/project_settings.config 里的 filament_colour（AMS 槽位色）
+  * 默认槽位：Metadata/model_settings.config 里每个 object / part 的 extruder
+  * 逐面颜色：每个三角面自身的 paint_color（Bambu 涂抹多色位流），
+    未涂抹的面回落到它所属 part 的 extruder
+  * 几何完全保真：顶点、三角面、object 划分、摆放变换照抄源文件，
+    不简化、不重网格、不合并顶点
+  * 3MF 里用材料扩展 <m:colorgroup> 定义颜色表，每个三角面写 pid + p1
+  * OBJ 里按颜色分 usemtl 组，MTL 里每个材质的 Kd 是对应的 0~1 数值
+    （十六进制色号 ÷ 255，与之前交付给嘉立创的文件保持一致）

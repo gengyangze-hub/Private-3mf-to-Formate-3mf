@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+.python-version
+
+# 转换输出
+输出/
+*_color/
+*_color.3mf
+*_color.obj
+*_color.mtl
+*_color.zip
+
+# 日志与临时文件
+*.log
+*.tmp
+*.temp
+~$*
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
